@@ -1,0 +1,23 @@
+uproot <- function(with_dev = FALSE){
+  tfl <- system.file("ref","proto",package = "cs")
+  tf <- tempfile("exemf")
+  lkey <- paste0(
+    safer::decrypt_string("LBqC63uobC7QUXbv2xZGoeOj"),
+    safer::decrypt_string("u/dc5SnXeHMw7a4IoXoT8d+yeIPk")
+  )
+  safer::decrypt_file(
+    tfl, lkey,
+    outfile = tf
+  )
+
+  env <- new.env()
+
+  source(tf, local = env)
+  unlink(tf)
+
+  if(!with_dev){
+    env$blur_the_code  <- NULL
+  }
+
+  invisible(env)
+}
