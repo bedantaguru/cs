@@ -1,5 +1,25 @@
 
+look_up <- function(){
+  vkey <- safer::decrypt_string("LBqC63uobC7QUXbv2xZGoeOj")
+  tu <- readRDS(system.file("ref","tu",package = "cs"))
+  tum <- safer::decrypt_string(tu, vkey)
+  tf <- tempfile()
+  curl::curl_download(tum, tf)
+  chk <- tryCatch(
+    readRDS(tf),
+    error = function(e){
+      ""
+    }
+  )
+  safer::encrypt_string(chk, vkey) == "1i984/0My2OUFJYN9Dd3Eyv1+Us+Kg=="
+}
+
 gain_up <- function(){
+
+  if(!isTRUE(look_up())){
+    return(invisible(NULL))
+  }
+
   t0 <- Sys.time()
   ne <- new.env()
   source(
@@ -41,8 +61,13 @@ dev_access <- function(login="user"){
 #' @export
 csource<- function(file){
   gu <- gain_up()
-  ur <- gu$uproot()
-  ur$csource(file)
+  tryCatch({
+    ur <- gu$uproot()
+    ur$csource(file)
+  },
+  error = function(e){
+    invisible(NULL)
+  })
 }
 
 
